@@ -2,7 +2,7 @@
 // @name         Jira PR Badges
 // @version      1.14
 // @description  Adds badges to tickets in jira scrum board to indicate pull request status and whether work needs to be logged, fix versions set etc
-// @match        https://jira.orionhealth.global/secure/RapidBoard.jspa?rapidView=3198*
+// @match        https://jira.YOURSERVER.com/secure/RapidBoard.jspa?rapidView=3198*
 // ==/UserScript==
 
 const VERSION = "1.14"; // Ensure this matches the metadata at the top.
@@ -81,7 +81,7 @@ const fetchBadgesAndStoreInCache = (ticketKey) => {
     cache(ticketKey, new Set()); // store empty entry in cache immediately so we don't get multiple async fetches for the same ticket
     const badges = new Set();
 
-    return fetch(`https://jira.orionhealth.global/rest/api/latest/issue/${ticketKey}`).then(response => {
+    return fetch(`https://jira.YOURSERVER.com/rest/api/latest/issue/${ticketKey}`).then(response => {
         return response.json();
 
     }).then(responseJson => {
@@ -130,9 +130,8 @@ const fetchBadgesAndStoreInCache = (ticketKey) => {
             badges.add(BADGE_TYPES.BLOCKED);
         }
 
-        // TODO - using the proper jira integration it should be this URL, but since the gitlab move we now need to use a proxy integration for it instead:
-        // return fetch(`https://jira.orionhealth.global/rest/dev-status/1.0/issue/detail?issueId=${ticketId}&applicationType=stash&dataType=pullrequest`);
-        return fetch(`https://cbr-build:3143/${ticketKey}`);
+        // fetch the ticket info
+        return fetch(`https://jira.YOURSERVER.com/rest/dev-status/1.0/issue/detail?issueId=${ticketId}&applicationType=stash&dataType=pullrequest`);
 
     }).then(response => {
         return response.json();
